@@ -1,66 +1,128 @@
 # API Requirements
 
-The company stakeholders want to create an online storefront to showcase their great product ideas. Users need to be able to browse an index of all products, see the specifics of a single product, and add products to an order that they can view in a cart page. You have been tasked with building the API that will support this application, and your coworker is building the frontend.
-
-These are the notes from a meeting with the frontend developer that describe what endpoints the API needs to supply, as well as data shapes the frontend and backend have agreed meet the requirements of the application.
-
 ## API Endpoints
 
-#### Products
+### Products
 
-- Index `/products` [GET]
+- Index `/products/index` [GET] [token required]
+- Read `/products/show/:id` [GET] [token required]
 - Create `/products/create` [POST] [token required]
-- Read `/products/:id` [GET]
-- Update `/products/:id` [PUT] [token required]
-- Delete `/products/:id` [DELETE] [token required]
 
-#### Users
+      Data = {
+        name: req.body.name,
+        price: req.body.price,
+      };
 
-- Index `/users` [GET] [token required]
+- Update `/products/update/:id` [PUT] [token required]
+
+      Data = {
+        name: req.body.name,
+        price: req.body.price,
+      };
+
+- Delete `/products/delete/:id` [DELETE] [token required]
+
+---
+
+### Users
+
+- Index `/users/index` [GET] [token required]
+- Read `/users/show/:id` [GET] [token required]
 - Create `/users/create` [POST]
-- Read `/users/:id` [GET] [token required]
-- Update `/users/:id` [PUT] [token required]
-- Delete `/users/:id` [DELETE] [token required]
-- Auth `/users/auth` [POST]
 
-#### Orders
+      Data = {
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password,
+        streetNumber: req.body.streetNumber,
+        streetName: req.body.streetName,
+        city: req.body.city,
+      };
 
-- Index `/orders` [GET] [token required]
+- Update `/users/update/:id` [PUT] [token required]
+
+      Data = {
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password,
+        streetNumber: req.body.streetNumber,
+        streetName: req.body.streetName,
+        city: req.body.city,
+      };
+
+- Delete `/users/delete/:id` [DELETE] [token required]
+- Auth `/users/login` [POST]
+
+      Data = {
+        email: req.body.email,
+        password: req.body.password,
+      };
+
+---
+
+### Orders
+
+- Index `/orders/index` [GET] [token required]
+- Read `/orders/show/:id` [GET] [token required]
 - Create `/orders/create` [POST] [token required]
-- Read `/orders/:id` [GET] [token required]
-- Update `/orders/:id` [PUT] [token required]
-- Delete `/orders/:id` [DELETE] [token required]
+
+      Data = {
+        products: req.body.products,
+        userId: req.body.userId,
+        status: req.body.status,
+      };
+
+- Update `/orders/update/:id` [PUT] [token required]
+
+      Data = {
+        products: req.body.products,
+        userId: req.body.userId,
+        status: req.body.status,
+      };
+
+- Delete `/orders/delete/:id` [DELETE] [token required]
+
+---
+
+---
 
 ## Data Shapes
 
-#### Product
+### Product
 
-Table: _products_
+#### Table: products
 
-- id `SERIAL PRIMARY KEY`
-- name `VARCHAR`
-- price `INTEGER`
+    => id `SERIAL PRIMARY KEY`
+    => name `VARCHAR`
+    => price `INTEGER`
 
-#### User
+### User
 
-Table: _users_
+#### Table: users
 
-- id `SERIAL PRIMARY KEY`
-- username `VARCHAR`
-- firstname `VARCHAR`
-- lastname `VARCHAR`
-- password_digest `VARCHAR`
+    => id `SERIAL PRIMARY KEY`
+    => name `VARCHAR`
+    => email `VARCHAR`
+    => password `VARCHAR`
+    => addressId `INTEGER
 
-#### Orders
+#### Table: addresses
 
-Table: _orders_
+    => id `SERIAL PRIMARY KEY`
+    => streetNumber `INTEGER`
+    => streetName `VARCHAR`
+    => city `VARCHAR`
 
-- id `SERIAL PRIMARY KEY`
-- user_id `INTEGER` `REFERENCES users(id)`
-- status `BOOLEAN`
+### Order
 
-Table: _order_products_
+#### Table: orders
 
-- order_id `INTEGER` `REFERENCES orders(id)`
-- product_id `INTEGER` `REFERENCES products(id)`
-- quantity `INTEGER`
+    => id `SERIAL PRIMARY KEY`
+    => user_id `INTEGER` `REFERENCES users(id)`
+    => status `BOOLEAN`
+
+Table: order_products
+
+    => order_id `INTEGER` `REFERENCES orders(id)`
+    => product_id `INTEGER` `REFERENCES products(id)`
+    => quantity `INTEGER`
