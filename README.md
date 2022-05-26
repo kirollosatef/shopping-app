@@ -1,142 +1,167 @@
-<p align="center">
-  <a href="" rel="noopener">
- <img width=200px height=200px src="https://i.imgur.com/FxL5qM0.jpg" alt="Bot logo"></a>
-</p>
+# Udacity: Build A Storefront Backend
 
-<h3 align="center">Project Title</h3>
+This is a backend API build in Nodejs for an online store. It exposes a RESTful API that will be used by the frontend developer on the frontend.
 
-<div align="center">
+The database schema and and API route information can be found in the [REQUIREMENT.md](REQUIREMENTS.md)
 
-[![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![Platform](https://img.shields.io/badge/platform-reddit-orange.svg)](https://www.reddit.com/user/Wordbook_Bot)
-[![GitHub Issues](https://img.shields.io/github/issues/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/The-Documentation-Compendium.svg)](https://github.com/kylelobo/The-Documentation-Compendium/pulls)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
+## Installation Instructions
 
-</div>
+This section contains all the packages used in this project and how to install them. However, you can fork this repo and run the following command at the root directory to install all packages.
 
----
+`yarn` or `npm install`
 
-<p align="center"> 🤖 Few lines describing what your bot does.
-    <br> 
-</p>
+### Packages
 
-## 📝 Table of Contents
+Here are some of the few packages that were installed.
 
-- [About](#about)
-- [Demo / Working](#demo)
-- [How it works](#working)
-- [Usage](#usage)
-- [Getting Started](#getting_started)
-- [Deploying your own bot](#deployment)
-- [Built Using](#built_using)
-- [TODO](../TODO.md)
-- [Contributing](../CONTRIBUTING.md)
-- [Authors](#authors)
-- [Acknowledgments](#acknowledgement)
+#### express
 
-## 🧐 About <a name = "about"></a>
+`npm i -S express`
+`npm i -D @types/express`
 
-Write about 1-2 paragraphs describing the purpose of your bot.
+#### typescript
 
-## 🎥 Demo / Working <a name = "demo"></a>
+`npm i -D typescript`
 
-![Working](https://media.giphy.com/media/20NLMBm0BkUOwNljwv/giphy.gif)
+#### db-migrate
 
-## 💭 How it works <a name = "working"></a>
+`npm install -g db-migrate`
 
-The bot first extracts the word from the comment and then fetches word definitions, part of speech, example and source from the Oxford Dictionary API.
+#### g
 
-If the word does not exist in the Oxford Dictionary, the Oxford API then returns a 404 response upon which the bot then tries to fetch results form the Urban Dictionary API.
+`npm install -g n`
 
-The bot uses the Pushshift API to fetch comments, PRAW module to reply to comments and Heroku as a server.
+#### rimraf
 
-The entire bot is written in Python 3.6
+`npm install --save rimraf`
 
-## 🎈 Usage <a name = "usage"></a>
+#### cors
 
-To use the bot, type:
+`npm install --save cors`
 
-```
-!dict word
-```
+#### bcrypt
 
-The first part, i.e. "!dict" **is not** case sensitive.
+`npm -i bcrypt`
+`npm -i -D @types/bcrypt`
 
-The bot will then give you the Oxford Dictionary (or Urban Dictionary; if the word does not exist in the Oxford Dictionary) definition of the word as a comment reply.
+#### morgan
 
-### Example:
+`npm install --save morgan`
+`npm -i -D @types/morgan`
 
-> !dict what is love
+#### jsonwebtoken
 
-**Definition:**
+`npm install jsonwebtoken --sav`
+`npm -i -D @types/jsonwebtoken`
 
-Baby, dont hurt me~
-Dont hurt me~ no more.
+#### cross-env
 
-**Example:**
+`npm install --save-dev cross-env`
 
-Dude1: Bruh, what is love?
-Dude2: Baby, dont hurt me, dont hurt me- no more!
-Dude1: dafuq?
+#### jasmine
 
-**Source:** https://www.urbandictionary.com/define.php?term=what%20is%20love
+`npm install jasmine @types/jasmine @ert78gb/jasmine-ts ts-node --save-dev`
 
----
+#### supertest
 
-<sup>Beep boop. I am a bot. If there are any issues, contact my [Master](https://www.reddit.com/message/compose/?to=PositivePlayer1&subject=/u/Wordbook_Bot)</sup>
+`npm i supertest`
+`npm i --save-dev @types/supertest`
 
-<sup>Want to make a similar reddit bot? Check out: [GitHub](https://github.com/kylelobo/Reddit-Bot)</sup>
+## Set up Database
 
-## 🏁 Getting Started <a name = "getting_started"></a>
+### Create Databases
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+We shall create the dev and test database.
 
-### Prerequisites
+- connect to the default postgres database as the server's root user `psql -U postgres`
+- In psql run the following to create a user
+  - `CREATE USER shopping_user WITH PASSWORD 'password123';`
+- In psql run the following to create the dev and test database
+  - `CREATE DATABASE shopping;`
+  - `CREATE DATABASE shopping_test;`
+- Connect to the databases and grant all privileges
+  - Grant for dev database
+    - `\c shopping`
+    - `GRANT ALL PRIVILEGES ON DATABASE shopping TO shopping_user;`
+  - Grant for test database
+    - `\c shopping_test`
+    - `GRANT ALL PRIVILEGES ON DATABASE shopping_test TO shopping_user;`
 
-What things you need to install the software and how to install them.
+### Migrate Database
 
-```
-Give examples
-```
+Navigate to the root directory and run the command below to migrate the database
 
-### Installing
+`yarn dev-up`
 
-A step by step series of examples that tell you how to get a development env running.
+!['migrate database'](./docs/migrate_up.png)
 
-Say what the step will be
+## Enviromental Variables Set up
+
+Bellow are the environmental variables that needs to be set in a `.env` file. This is the default setting that I used for development, but you can change it to what works for you.
+
+**NB:** The given values are used in developement and testing but not in production.
 
 ```
-Give the example
+DB_NAME = shopping
+DB_NAME_TEST = shopping_test
+DB_HOST = localhost
+DB_PORT = 5432
+DB_USER = shopping_user
+DB_PASS= password123
+BCRYPT_PASSWORD=my-name-is-enow-2021
+SALT_ROUNDS=10
+TOKEN_TEST = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.J8BgsyqA3Y6F71NXbfuYIfRVuvRa_qb08RStxrCVhlQ
+JWT_SECRET = 5ae8adc9731627905ebf0905dbe4a114ba7d8354ae1796772dfa523a2142761b78d48cbfcd98000bb94fbdbd8147f30de6b3484c3a060d389068204df6a50630
+ENVI = dev
 ```
 
-And repeat
+## Start App
+
+`yarn watch` or `npm run watch`
+
+!['start server'](./docs/start.png)
+
+### Running Ports
+
+After start up, the server will start on port `3000` and the database on port `5432`
+
+## Endpoint Access
+
+All endpoints are described in the [REQUIREMENT.md](REQUIREMENTS.md) file.
+
+## Token and Authentication
+
+Tokens are passed along with the http header as
 
 ```
-until finished
+Authorization   Bearer <token>
 ```
 
-End with an example of getting some data out of the system or using it for a little demo.
+## Testing
 
-## 🚀 Deploying your own bot <a name = "deployment"></a>
+Run test with
 
-To see an example project on how to deploy your bot, please see my own configuration:
+`yarn test`
 
-- **Heroku**: https://github.com/kylelobo/Reddit-Bot#deploying_the_bot
+It sets the environment to `test`, migrates up tables for the test database, run the test then migrate down all the tables for the test database.
 
-## ⛏️ Built Using <a name = "built_using"></a>
+!['test 1'](docs/test1.png)
+!['test 2'](docs/test2.png)
+!['test 3'](docs/test3.png)
 
-- [PRAW](https://praw.readthedocs.io/en/latest/) - Python Reddit API Wrapper
-- [Heroku](https://www.heroku.com/) - SaaS hosting platform
+## Important Notes
 
-## ✍️ Authors <a name = "authors"></a>
+### Environment Variables
 
-- [@kylelobo](https://github.com/kylelobo) - Idea & Initial work
+Environment variables are set in the `.env` file and added in `.gitignore` so that it won't be added to github. However, I had provided the names of the variables that need to be set above. I also provided the values that were used in development and testing.
 
-See also the list of [contributors](https://github.com/kylelobo/The-Documentation-Compendium/contributors) who participated in this project.
+### Changing Enviroment to testing
 
-## 🎉 Acknowledgements <a name = "acknowledgement"></a>
+I had set up two databases, one for development and the other for testing. During testing, I had to make sure the testing database is used instead of the developement database.
 
-- Hat tip to anyone whose code was used
-- Inspiration
-- References
+To acheive this, I set up a variable in the `.env` file which is by default set to `dev`. During testing, the command `yarn test` will set this variable to `testing` in the package.json. Here is the complete command.
+`npm run test-up && cross-env ENVI=test jasmine-ts && npm run test-down`
+
+The first command migrates all tables then the second command changes the enviroment variable `ENVI` to testing, then the jasmine is run and then after testing, the database is reset.
+
+Note the `cross-env` in command above. Since this may have some issues in Windows, I had to use this pakcage [cross-env](https://www.npmjs.com/package/cross-env) to take care of it. This permits the changing of environment variable this way to work for all platforms
