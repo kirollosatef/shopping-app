@@ -4,13 +4,17 @@
 
 ## database ERD
 
-!['ERD database'](./docs/ERD.png)
-
+<p align="center">
+    <image src="./docs/ERD.png" width="800px" height="500px" >
+</p>
+    
 ## database schema
+    
+<p align="center">
+    <image src="./docs/Schema.png" width="500px" height="500px" >
+</p>
 
-!['Schema database'](./docs/Schema.png)
-
-and API route information can be found in the [REQUIREMENT.md](REQUIREMENTS.md)
+### and API route information can be found in the [REQUIREMENT.md](REQUIREMENTS.md)
 
 ## Set up
 
