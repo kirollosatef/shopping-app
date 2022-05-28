@@ -7,12 +7,12 @@
 
 - add your database information in the `.env` file as `.ex.env`
 
-  DB_HOST=`localhost`
-  DB_PORT=`5432`
-  DB_NAME=`DatabaseName`
-  DB_NAME_TEST=`DatabaseNameTest`
-  DB_USER=`UserName`
-  DB_PASSWORD=`Password`
+      DB_HOST=`localhost`
+      DB_PORT=`5432`
+      DB_NAME=`DatabaseName`
+      DB_NAME_TEST=`DatabaseNameTest`
+      DB_USER=`UserName`
+      DB_PASSWORD=`Password`
 
 - `npm run db:up` (make sure you have the correct database information)
 
