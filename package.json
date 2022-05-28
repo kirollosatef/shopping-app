@@ -8,12 +8,10 @@
     "start": "nodemon build/server.js",
     "dev": "nodemon src/server.ts --watch",
     "build": "npx tsc",
-    "db:up": "db-migrate up",
-    "db:down": "db-migrate down",
-    "db:seed": "npm run build&&node build/utils/seeders/db.seeder.js",
-    "test": "npm run build && set ENV=test && db-migrate --env test up && jasmine && db-migrate --env test reset",
-    "testasd": "set ENV=test && db-migrate --env test up && jasmine-ts && db-migrate db:drop test",
-    "jasmine": "jasmine-ts"
+    "db:up": "npx db-migrate up",
+    "db:down": "npx db-migrate reset",
+    "test": "npm run build && set ENV=test&& npx db-migrate --env test up&& jasmine && npx db-migrate --env test reset",
+    "test:clean": "set ENV=test&& npx db-migrate --env test reset"
   },
   "repository": {
     "type": "git",
@@ -27,30 +25,38 @@
   },
   "homepage": "https://github.com/kirollosatef/shopping-app#readme",
   "dependencies": {
-    "@types/express": "^4.17.13",
     "bcrypt": "^5.0.1",
-    "body-parser": "^1.20.0",
     "cors": "^2.8.5",
     "db-migrate": "^0.11.13",
     "db-migrate-pg": "^1.2.2",
-    "dotenv": "^16.0.1",
-    "express": "^4.18.1",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.0",
+    "express-fileupload": "^1.4.0",
+    "helmet": "^5.0.2",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
-    "pg": "^8.7.3",
-    "typescript": "^4.6.4"
+    "pg": "^8.7.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/express-fileupload": "^1.2.2",
     "@types/jasmine": "^4.0.3",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/morgan": "^1.9.3",
     "@types/pg": "^8.6.5",
+    "@types/supertest": "^2.0.12",
+    "@typescript-eslint/eslint-plugin": "^5.21.0",
+    "@typescript-eslint/parser": "^5.21.0",
+    "eslint": "^8.14.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
     "jasmine": "^4.1.0",
     "jasmine-spec-reporter": "^7.0.0",
-    "jasmine-ts": "^0.4.0",
+    "nodemon": "^2.0.15",
+    "supertest": "^6.2.3",
     "ts-node": "^10.7.0",
-    "tsc-watch": "^5.0.3"
+    "typescript": "^4.6.3"
   }
 }

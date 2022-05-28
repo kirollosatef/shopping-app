@@ -1,4 +1,4 @@
-import DBInfo from "../db";
+import DBInfo from '../db';
 
 export interface FProduct {
   name: string;
@@ -69,6 +69,22 @@ export class productClass {
       const result = await db.query(sql, values);
       db.release();
       return result.rows[0];
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deleteAll(): Promise<void> {
+    try {
+      const db = await DBInfo.connect();
+      const sql1 = `DELETE FROM orders_products`;
+      await db.query(sql1);
+      const sql2 = `DELETE FROM orders`;
+      await db.query(sql2);
+      const sql3 = `DELETE FROM users`;
+      await db.query(sql3);
+      const sql4 = `DELETE FROM products`;
+      await db.query(sql4);
     } catch (err) {
       throw err;
     }
