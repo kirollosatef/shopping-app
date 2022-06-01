@@ -8,10 +8,12 @@
     "start": "nodemon build/server.js",
     "dev": "nodemon src/server.ts --watch",
     "build": "npx tsc",
-    "db:up": "npx db-migrate up",
-    "db:down": "npx db-migrate reset",
-    "test": "npm run build && set ENV=test&& npx db-migrate --env test up&& jasmine && npx db-migrate --env test reset",
-    "test:clean": "set ENV=test&& npx db-migrate --env test reset"
+    "db:up": "db-migrate up",
+    "db:down": "db-migrate reset",
+    "jasmine": "jasmine",
+    "test": "npm run build && set ENV=test&& db-migrate --env test up && jasmine && db-migrate --env test reset",
+    "test:up": "set ENV=test&& npx db-migrate --env test up",
+    "test:down": "set ENV=test&& npx db-migrate --env test reset"
   },
   "repository": {
     "type": "git",

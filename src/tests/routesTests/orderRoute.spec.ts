@@ -1,50 +1,106 @@
+import { Product } from './../../models/product.model';
 import supertest from 'supertest';
 import app from '../../server';
-import { UserOrder, orderClass } from '../../models/order.model';
+import { orderClass } from '../../models/order.model';
+import {
+  createTestUser,
+  createTestProduct
+} from '../../middleware/creatTestUser';
+import { User } from '../../models/user.model';
 
-let newOrderClass = new orderClass();
+let testUser: User;
+let testProduct: Product;
 
-const order: UserOrder = {
-  userid: 1,
-  status: 'pending',
-  products: [
-    {
-      productid: 1,
-      quantity: 4
-    }
-  ]
-};
+const newOrderClass = new orderClass();
 
 describe('Order Routes', () => {
   let orderId: number;
+
   beforeAll(async () => {
     await newOrderClass.deleteAll();
-    let date = await newOrderClass.create(order);
-    orderId = date.id as unknown as number;
-  });
-  it('should create order', async () => {
-    const res = await supertest(app).post('/api/orders').send(order);
-    expect(res.status).toBe(201);
+    testUser = await createTestUser();
+    testProduct = await createTestProduct();
   });
 
-  it('should update order', async () => {
+  it('[post] create order', async () => {
     const res = await supertest(app)
-      .put(`/api/orders/${orderId}`)
+      .post('/orders/create')
+      .set({
+        token: `${testUser.token}`,
+        'Content-Type': 'application/json'
+      })
       .send({
-        userid: 1,
-        status: 'pending',
+        userid: testUser.id,
         products: [
           {
-            productid: 1,
+            productid: testProduct.id,
             quantity: 4
           }
-        ]
+        ],
+        status: 'pending'
       });
+    orderId = res.body.order.id as unknown as number;
     expect(res.status).toBe(200);
+    expect(res.body.order.status).toBe('pending');
+    expect(res.body.order.products[0].productid).toBe(testProduct.id);
+    expect(res.body.order.products[0].quantity).toBe(4);
   });
 
-  it('should delete order', async () => {
-    const res = await supertest(app).delete(`/api/orders/${orderId}`);
+  it('[get] index order', async () => {
+    const res = await supertest(app)
+      .get('/orders/index')
+      .set({
+        token: `${testUser.token}`,
+        'Content-Type': 'application/json'
+      });
+    expect(res.status).toBe(200);
+    expect(res.body.orders.length).toBe(1);
+    expect(res.body.orders[0].status).toBe('pending');
+    expect(res.body.orders[0].products[0].productid).toBe(testProduct.id);
+    expect(res.body.orders[0].products[0].quantity).toBe(4);
+  });
+
+  it('[get] show order', async () => {
+    const res = await supertest(app)
+      .get(`/orders/show/${orderId}`)
+      .set({
+        token: `${testUser.token}`,
+        'Content-Type': 'application/json'
+      });
+    expect(res.status).toBe(200);
+    expect(res.body.order.status).toBe('pending');
+    expect(res.body.order.products[0].productid).toBe(testProduct.id);
+    expect(res.body.order.products[0].quantity).toBe(4);
+  });
+
+  it('[put] update order', async () => {
+    const res = await supertest(app)
+      .put(`/orders/update/${orderId}`)
+      .set({
+        token: `${testUser.token}`,
+        'Content-Type': 'application/json'
+      })
+      .send({
+        userid: testUser.id,
+        products: [
+          {
+            productid: testProduct.id,
+            quantity: 4
+          }
+        ],
+        status: 'done'
+      });
+    expect(res.status).toBe(200);
+    expect(res.body.order.status).toBe('done');
+  });
+
+  it('[delete] delete order', async () => {
+    const res = await supertest(app)
+      .delete(`/orders/delete/${orderId}`)
+      .set({
+        token: `${testUser.token}`,
+        'Content-Type': 'application/json'
+      });
     expect(res.status).toBe(200);
   });
 });

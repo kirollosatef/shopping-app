@@ -1,37 +1,86 @@
 import supertest from 'supertest';
 import app from '../../server';
-import { FProduct, productClass } from '../../models/product.model';
+import { productClass } from '../../models/product.model';
+import { createTestUser } from '../../middleware/creatTestUser';
+import { User } from '../../models/user.model';
+
+let testUser: User;
 
 const newProductClass = new productClass();
-
-const product: FProduct = {
-  name: 'Product 1',
-  price: 100
-};
 
 describe('Product Routes', () => {
   let productId: number;
 
   beforeAll(async () => {
-    newProductClass.deleteAll();
-    let date = await newProductClass.create(product);
-    productId = date.id as unknown as number;
-  });
-  it('should create product', async () => {
-    const res = await supertest(app).post('/api/products').send(product);
-    expect(res.status).toBe(201);
+    await newProductClass.deleteAll();
+    testUser = await createTestUser();
   });
 
-  it('should update product', async () => {
-    const res = await supertest(app).put(`/api/products/${productId}`).send({
-      name: 'Product 1',
-      price: 100
-    });
+  it('[post] create product', async () => {
+    const res = await supertest(app)
+      .post('/products/create')
+      .set({
+        token: `${testUser.token}`,
+        'Content-Type': 'application/json'
+      })
+      .send({
+        name: 'Product 1',
+        price: 100
+      });
+    productId = res.body.product.id as unknown as number;
     expect(res.status).toBe(200);
+    expect(res.body.product.name).toBe('Product 1');
+    expect(res.body.product.price).toBe(100);
   });
 
-  it('should delete product', async () => {
-    const res = await supertest(app).delete(`/api/products/${productId}`);
+  it('[get] index product', async () => {
+    const res = await supertest(app)
+      .get('/products/index')
+      .set({
+        token: `${testUser.token}`,
+        'Content-Type': 'application/json'
+      });
+    expect(res.status).toBe(200);
+    expect(res.body.products.length).toBe(1);
+    expect(res.body.products[0].name).toBe('Product 1');
+    expect(res.body.products[0].price).toBe(100);
+  });
+
+  it('[get] show product', async () => {
+    const res = await supertest(app)
+      .get(`/products/show/${productId}`)
+      .set({
+        token: `${testUser.token}`,
+        'Content-Type': 'application/json'
+      });
+    expect(res.status).toBe(200);
+    expect(res.body.product.name).toBe('Product 1');
+    expect(res.body.product.price).toBe(100);
+  });
+
+  it('[put] update product', async () => {
+    const res = await supertest(app)
+      .put(`/products/update/${productId}`)
+      .set({
+        token: `${testUser.token}`,
+        'Content-Type': 'application/json'
+      })
+      .send({
+        name: 'update 1',
+        price: 100
+      });
+    expect(res.status).toBe(200);
+    expect(res.body.product.name).toBe('update 1');
+    expect(res.body.product.price).toBe(100);
+  });
+
+  it('[delete] delete product', async () => {
+    const res = await supertest(app)
+      .delete(`/products/delete/${productId}`)
+      .set({
+        token: `${testUser.token}`,
+        'Content-Type': 'application/json'
+      });
     expect(res.status).toBe(200);
   });
 });

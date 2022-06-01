@@ -48,7 +48,7 @@ const updateUser = async (req: Request, res: Response) => {
   const userData = {
     name: req.body.name,
     email: req.body.email,
-    address: req.body.adress,
+    address: req.body.address,
     password: req.body.password
   };
   try {
